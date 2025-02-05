@@ -1,16 +1,18 @@
 package model.entities;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Contract {
+	
+	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy"); 
+	
 	private Integer number;
 	private LocalDate date;
 	private Double totalValue;
 	private List<Installment> installments = new ArrayList<>();
-		
 	public Contract() {
 	}
 
@@ -18,7 +20,6 @@ public class Contract {
 		this.number = number;
 		this.date = date;
 		this.totalValue = totalValue;
-		this.installments = installments;
 	}
 
 	public Integer getNumber() {
@@ -52,7 +53,22 @@ public class Contract {
 	public void setInstallments(List<Installment> installments) {
 		this.installments = installments;
 	}
-
 	
+	public void addInstallment(Installment installment) {
+		installments.add(installment);
+	}
+	
+	public void removeInstallment(Installment installment) {
+		installments.remove(installment);
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Parcelas: \n");
+		for (Installment P : installments) {
+			sb.append(P.getDueDate().format(fmt) + " - " + String.format("$%.2f", P.getAmount()) + "\n");
+		}
+		return sb.toString();
+	}
 	
 }
