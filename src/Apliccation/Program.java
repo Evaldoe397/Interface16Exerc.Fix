@@ -33,8 +33,12 @@ public class Program {
 		int months = sc.nextInt();
 		
 		Contract cr = new Contract(number, date, totalValue);
-		ContractService service = new ContractService();
+		
+		ContractService service = new ContractService(new PaypalService());
+		
 		service.processContract(cr, months);
+		
+		
 		
 		/*LocalDate P = null;
 		double parc = cr.getTotalValue() / months;

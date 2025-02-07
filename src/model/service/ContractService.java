@@ -7,24 +7,25 @@ import model.entities.Contract;
 import model.entities.Installment;
 
 public class ContractService {
-	Contract obj = new Contract();
-		
-	public ContractService() {
+	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	Contract contract = new Contract();
+	private OnlinePaymentService onlinePaymentService;
+	
+	public ContractService(OnlinePaymentService onlinePaymentService ) {
+		this.onlinePaymentService = onlinePaymentService;
 	}
 	
-	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	
-	public void processContract(Contract obj, int months) {
-		OnlinePaymentService service = new PaypalService();
-		LocalDate P = null;
-		double parc = obj.getTotalValue() / months;
-		double amount = parc + service.paymentFee(parc);
+	public void processContract(Contract contract, int months ) {
+		
 		for (int i=0; i<months; i++ ) {
-			P = obj.getLocalDate().plusMonths(i+1);
-			amount = service.interest(amount, months);
-			Installment installment = new Installment(P,amount);
-			obj.addInstallment(installment);
-					
+			double amount = contract.getTotalValue()/months; 
+			double si = onlinePaymentService.interest(amount, months); 
+			amount = amount + si*(i+1);
+			double sp = onlinePaymentService.paymentFee(amount);
+			amount = amount + sp; 
+			LocalDate vencimento = contract.getLocalDate().plusMonths(i+1);
+			Installment installment = new Installment(vencimento,amount);
+			contract.addInstallment(installment);
 		}
 	}
 }	

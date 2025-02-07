@@ -13,6 +13,7 @@ public class Contract {
 	private LocalDate date;
 	private Double totalValue;
 	private List<Installment> installments = new ArrayList<>();
+	
 	public Contract() {
 	}
 
